@@ -19,7 +19,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 MailBag is a simple plaintext-focused email manager. The application has been purpose-built for a fairly simple use-case.
 
 
-**Shipped version:** 1.0~ynh1
+**Shipped version:** 23.12.30~ynh1
 
 ## Screenshots
 
