@@ -1,0 +1,11 @@
+[Unit]
+Description=MailBag Queue
+
+[Service]
+User=__APP__
+Group=__APP__
+Restart=always
+ExecStart=/usr/bin/php__PHPVERSION__ __INSTALL_DIR__/artisan queue:work --sleep=3 --tries=1
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,59 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
+
+packaging_format = 2
+
+id = "mailbag"
+name = "MailBag"
+description.en = "Simple plaintext email send app"
+description.fr = "Application simple d'envoi d'e-mails en texte brut"
+
+version = "1.0~ynh1"
+
+maintainers = ["eric_G"]
+
+[upstream]
+license = "MIT"
+code = "https://github.com/ssddanbrown/mailbag"
+
+[integration]
+yunohost = ">= 11.2"
+architectures = "all"
+multi_instance = true
+
+ldap = false
+
+sso = false
+
+disk = "50M"
+ram.build = "50M"
+ram.runtime = "50M"
+
+[install]
+    [install.domain]
+    type = "domain"
+
+    [install.init_main_permission]
+    type = "group"
+    default = "visitors"
+
+    [install.admin]
+    type = "user"
+
+[resources]
+
+    [resources.sources]
+
+        [resources.sources.main]
+        url = "https://github.com/ssddanbrown/mailbag/archive/05a98f7ff15533f828d53a43c63ca56176c9c418.tar.gz"
+        sha256 = "8745550ec11f1fae505c98542044232643d23c3a5a47b5b15694d84d7265d8c2"
+
+    [resources.system_user]
+    allow_email = true
+    
+    [resources.install_dir]
+
+    [resources.permissions]
+    main.url = "/"
+
+    [resources.apt]
+    packages = "sqlite3, php8.2-fpm, php8.2-mbstring, php8.2-sqlite3, php8.2-xml"
