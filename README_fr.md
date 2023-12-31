@@ -19,7 +19,7 @@ Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) po
 MailBag est un simple gestionnaire de messagerie axé sur le texte brut. L'application a été spécialement conçue pour un cas d'utilisation assez simple.
 
 
-**Version incluse :** 1.0~ynh1
+**Version incluse :** 23.12.30~ynh1
 
 ## Captures d’écran
 
