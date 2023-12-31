@@ -29,7 +29,7 @@ then
 	ynh_script_progression --message="Upgrading source files..." --weight=1
 
 	# Download, check integrity, uncompress and patch the source from manifest.toml
-	ynh_setup_source --dest_dir="$install_dir" --keep=".env"
+	ynh_setup_source --dest_dir="$install_dir" --keep=".env storage/database/database.sqlite"
 fi
 
 chmod -R o-rwx $install_dir
@@ -63,6 +63,24 @@ ynh_add_config --template=".env" --destination="$install_dir/.env"
 
 chmod 400 "$install_dir/.env"
 chown $app:$app "$install_dir/.env"
+
+#=================================================
+# FINAL MAILBAG INSTALL
+#=================================================
+ynh_script_progression --message="Install $app" --weight=5
+
+pushd $install_dir
+	php$phpversion artisan migrate --no-interaction --force
+ 	ynh_use_nodejs
+	ynh_exec_warn_less sudo -u $app env $ynh_node_load_PATH $ynh_npm install
+	ynh_exec_warn_less sudo -u $app env $ynh_node_load_PATH NODE_ENV=production $ynh_npm run build
+
+	php$phpversion artisan queue:restart
+	php$phpversion artisan config:cache
+	php$phpversion artisan route:cache
+	php$phpversion artisan view:cache
+popd
+
 
 #=================================================
 # START SYSTEMD SERVICE

@@ -66,7 +66,7 @@ chmod 640 "$install_dir/.env"
 chown $app:$app "$install_dir/.env"
 
 #=================================================
-# FINAL BOOKSTACK INSTALL
+# FINAL MAILBAG INSTALL
 #=================================================
 ynh_script_progression --message="Install $app" --weight=5
 
