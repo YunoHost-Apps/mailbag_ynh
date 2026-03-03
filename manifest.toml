@@ -7,13 +7,13 @@ name = "MailBag"
 description.en = "Simple plaintext email send app"
 description.fr = "Application simple d'envoi d'e-mails en texte brut"
 
-version = "23.12.30~ynh1"
+version = "2026.03.03~ynh1"
 
 maintainers = ["eric_G"]
 
 [upstream]
 license = "MIT"
-code = "https://github.com/ssddanbrown/mailbag"
+code = "https://codeberg.org/danb/mailbag"
 
 [integration]
 yunohost = ">= 12.2.38"
