@@ -7,10 +7,9 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression "Removing system configurations related to $app..."
 
-if ynh_hide_warnings yunohost service status $app >/dev/null
-then
-	ynh_script_progression "Removing $app service integration..."
-	yunohost service remove $app
+# Remove the service from the list of services known by YunoHost (added from `yunohost service add`)
+if ynh_hide_warnings yunohost service status "$app" >/dev/null; then
+    yunohost service remove "$app"
 fi
 
 ynh_config_remove_systemd
@@ -20,9 +19,6 @@ ynh_config_remove_nginx
 ynh_config_remove_phpfpm
 
 ynh_safe_rm "/etc/cron.d/$app"
-
-# Remove NodeJS
-ynh_nodejs_remove
 
 #=================================================
 # END OF SCRIPT
