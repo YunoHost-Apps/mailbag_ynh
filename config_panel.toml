@@ -1,0 +1,57 @@
+version = "1.0"
+
+[main]
+services = [ "__APP__" ]
+name = "Config Panel"
+
+[main.app]
+name = "branding"
+
+    [main.app.app_company_name]
+    ask = "App Company Name"
+    bind = ":__INSTALL_DIR__/.env"
+    help = "Name of the entity that will be shown on things like unsubscribe/sign-up forms"
+    type = "string"
+
+    [main.app.home_redirect_url]
+    ask = "Home Redirect URL"
+    bind = ":__INSTALL_DIR__/.env"
+    help = "URL you want to redirect to when someone accesses the root/homepage of the app"
+    type = "string"
+    pattern.regexp = "^https://.+$"
+    pattern.error = "Must be a full URL; eg, `https://domain.tld`"
+
+    [main.app.mail_from_address]
+    ask = "Mail From Address"
+    bind = ":__INSTALL_DIR__/.env"
+    help = "Address emails applied to sent emails"
+    type = "string"
+    pattern.regexp = "^.+@.+$"
+    pattern.error = "An email is required for this field"
+
+    [main.app.mail_from_name]
+    ask = "Mail From Name"
+    bind = ":__INSTALL_DIR__/.env"
+    help = "Name applied to sent emails"
+    type = "string"
+
+[main.hcaptcha]
+name = "hCaptcha"
+
+    [main.hcaptcha.hcenable]
+    ask = "Enable hcaptcha?"
+    help = "Used to protect sign-up forms from bots; keys can be acquired at https://www.hcaptcha.com"
+    type = "boolean"
+    default = false
+
+    [main.hcaptcha.hcaptcha_sitekey]
+    ask = "Sitekey"
+    bind = ":__INSTALL_DIR__/.env"
+    type = "string"
+    visible = "hcenable"
+    
+    [main.hcaptcha.hcaptcha_secretkey]
+    ask = "Secret key"
+    bind = ":__INSTALL_DIR__/.env"
+    type = "string"
+    visible = "hcenable"
