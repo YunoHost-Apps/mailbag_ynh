@@ -10,7 +10,7 @@ It shall NOT be edited by hand.
 
 Simple plaintext email send app
 
-[![Version: 23.12.30~ynh1](https://img.shields.io/badge/Version-23.12.30~ynh1-rgb(18,138,11)?style=for-the-badge)](https://ci-apps.yunohost.org/ci/apps/mailbag/)
+[![Version: 2026.03.03~ynh1](https://img.shields.io/badge/Version-2026.03.03~ynh1-rgb(18,138,11)?style=for-the-badge)](https://ci-apps.yunohost.org/ci/apps/mailbag/)
 
 <div align="center">
 <a href="https://apps.yunohost.org/app/mailbag"><img height="100px" src="https://github.com/YunoHost/yunohost-artwork/raw/refs/heads/main/badges/neopossum-badges/badge_more_info_on_the_appstore.svg"/></a>
@@ -25,7 +25,7 @@ Simple plaintext email send app
 
 [![Automatic tests level](https://apps.yunohost.org/badge/cilevel/mailbag)](https://ci-apps.yunohost.org/ci/apps/mailbag/)
 
-🛠️ Upstream MailBag repository: <https://github.com/ssddanbrown/mailbag>
+🛠️ Upstream MailBag repository: <https://codeberg.org/danb/mailbag>
 
 Pull request are welcome and should target the [`testing` branch](https://github.com/YunoHost-Apps/mailbag_ynh/tree/testing).
 
