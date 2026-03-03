@@ -1,98 +1,77 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
-source _common.sh
 source /usr/share/yunohost/helpers
 
 email=$(ynh_user_get_info --username=$admin --key=mail)
 
 #=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..." --weight=7
-
-# Install Nodejs
-ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
-
-#=================================================
-# APP "BUILD" (DEPLOYING SOURCES, VENV, COMPILING ETC)
-#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..." --weight=1
+ynh_script_progression "Setting up source files..."
 
 ynh_setup_source --dest_dir="$install_dir"
 
-chmod -R o-rwx $install_dir
-chown -R $app:www-data "$install_dir"
+chmod -R g+w "$install_dir/storage"
+chmod -R g+w "$install_dir/bootstrap/cache"
 
 #=================================================
-# SYSTEM CONFIGURATION
+# INSTALL COMPOSER DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
+ynh_script_progression "Installing composer dependencies..."
 
-ynh_add_fpm_config
-
-ynh_add_nginx_config
-
-ynh_add_systemd_config
-
-ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
-chown root: "/etc/cron.d/$app"
-chmod 644 "/etc/cron.d/$app"
-
-yunohost service add $app --description="MailBag Queue" --log="/var/log/$app/$app.log"
+ynh_composer_exec install --no-dev
 
 #=================================================
-# INSTALL AND INITIALIZE COMPOSER
+# SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Installing Composer..." --weight=10
+ynh_script_progression "Adding system configurations related to $app..."
 
-ynh_install_composer
+ynh_config_add_phpfpm
 
-#=================================================
-# ADD A CONFIGURATION
-#=================================================
-ynh_script_progression --message="Adding a configuration file..." --weight=1
+ynh_config_add_nginx
 
-ynh_add_config --template=".env" --destination="$install_dir/.env"
+ynh_config_add_systemd
 
-chmod 640 "$install_dir/.env"
-chown $app:$app "$install_dir/.env"
+ynh_config_add --template="cron" --destination="/etc/cron.d/$app"
+
+yunohost service add "$app" --description="Mailbag Queue" --log="/var/log/$app/$app.log"
 
 #=================================================
-# FINAL MAILBAG INSTALL
+# ADD ENV
 #=================================================
-ynh_script_progression --message="Install $app" --weight=5
+ynh_script_progression "Adding a configuration file..."
+
+ynh_config_add --template=".env" --destination="$install_dir/.env"
+
+#=================================================
+# APP INSTALL
+#=================================================
+ynh_script_progression "Install $app"
 
 pushd $install_dir
-	php$phpversion artisan key:generate --no-interaction --force
-	touch storage/database/database.sqlite
-	php$phpversion artisan migrate --no-interaction --force
+	ynh_exec_as_app php$php_version artisan key:generate
+	ynh_exec_as_app touch storage/database/database.sqlite
+	ynh_exec_as_app php$php_version artisan migrate --no-interaction --force
 
- 	ynh_use_nodejs
-	ynh_exec_warn_less sudo -u $app env $ynh_node_load_PATH $ynh_npm install
-	ynh_exec_warn_less sudo -u $app env $ynh_node_load_PATH NODE_ENV=production $ynh_npm run build
+	ynh_hide_warnings npm install
+	ynh_hide_warnings ynh_exec_as_app npm run build
+	ynh_exec_as_app php$php_version artisan mailbag:add-user <<EOF
+$admin
+$email
+$password
+EOF
+	sed -i "/'url' => env('APP_URL', 'http:\/\/localhost'),/a \ \ \ \ 'home_redirect_url' => env('HOME_REDIRECT_URL')," config/app.php
 popd
 
-chown -R $app:www-data "$install_dir"
-
-#=================================================
-# GENERIC FINALIZATION
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --weight=1
+ynh_script_progression "Starting a systemd service..."
 
-# Start a systemd service
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemctl --service="$app" --action="start" --log_path="/var/log/$app/$app.log"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
-ynh_script_progression --message="Installation of $app completed" --last
+
+ynh_script_progression "Installation of $app completed"
