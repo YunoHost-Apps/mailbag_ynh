@@ -16,7 +16,7 @@ license = "MIT"
 code = "https://codeberg.org/danb/mailbag"
 
 [integration]
-yunohost = ">= 12.2.38"
+yunohost = ">= 12.1.38"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
