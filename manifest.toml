@@ -7,7 +7,7 @@ name = "MailBag"
 description.en = "Simple plaintext email send app"
 description.fr = "Application simple d'envoi d'e-mails en texte brut"
 
-version = "2.0.1~ynh1"
+version = "2026.03.03~ynh1"
 
 maintainers = ["eric_G"]
 
@@ -16,13 +16,12 @@ license = "MIT"
 code = "https://codeberg.org/danb/mailbag"
 
 [integration]
-yunohost = ">= 12.1.17"
+yunohost = ">= 12.1.38"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
 
 ldap = false
-
 sso = false
 
 disk = "50M"
@@ -48,9 +47,8 @@ ram.runtime = "50M"
     [resources.sources]
 
         [resources.sources.main]
-        url = "https://codeberg.org/danb/mailbag/archive/v2.0.1.tar.gz"
+        url = "https://codeberg.org/danb/mailbag/archive/a98dab573955764f71d0cbf4f02380eaaa8d4838.tar.gz"
         sha256 = "5fbcce99ded13e59ef89acc71cc7e312c6508ede3ff37002b257d7fff3628031"
-
 
     [resources.system_user]
     allow_email = true
@@ -61,10 +59,10 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
-    packages = "sqlite3, php8.3-fpm, php8.3-bcmath, php8.3-mbstring, php8.3-sqlite3, php8.3-xml"
+    packages = "sqlite3, php8.3-bcmath, php8.3-mbstring, php8.3-sqlite3, php8.3-xml"
+
+    [resources.composer]
+    version = "2.9.5"
 
     [resources.nodejs]
     version = "22"
-
-    [resources.composer]
-    version = "2.9.2"
