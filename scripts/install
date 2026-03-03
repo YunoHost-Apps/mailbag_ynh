@@ -51,10 +51,10 @@ pushd $install_dir
 	php$php_version artisan migrate --no-interaction --force
 
 	ynh_hide_warnings ynh_exec_as_app npm install
-	ynh_hide_warnings ynh_exec_as_app NODE_ENV=production npm run build
+	ynh_hide_warnings ynh_exec_as_app npm run build
 popd
 
-chown -R $app:www-data "$install_dir"
+chown -R $app:www-data storage/ boostrap/cache/
 
 #=================================================
 # START SYSTEMD SERVICE
