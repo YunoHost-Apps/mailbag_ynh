@@ -1,0 +1,26 @@
+From 6aa3199f3a8c75a517294ced065876c98022ccaa Mon Sep 17 00:00:00 2001
+From: trendless <trendless@trendless.ca>
+Date: Tue, 3 Mar 2026 15:42:28 -0700
+Subject: [PATCH] Update app.php
+
+add home_redirect_url
+---
+ config/app.php | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/config/app.php b/config/app.php
+index d32ea56..03a39c7 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -56,6 +56,8 @@ return [
+ 
+     'url' => env('APP_URL', 'http://localhost'),
+ 
++    'home_redirect_url' => env('HOME_REDIRECT_URL'),
++
+     /*
+     |--------------------------------------------------------------------------
+     | Application Timezone
+-- 
+2.52.0
+
