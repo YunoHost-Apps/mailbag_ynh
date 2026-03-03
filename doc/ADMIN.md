@@ -1,0 +1,1 @@
+Admin panel login: https://__DOMAIN__/login
