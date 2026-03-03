@@ -2,34 +2,36 @@
 
 source /usr/share/yunohost/helpers
 
-#=================================================
-# DECLARE DATA AND CONF FILES TO BACKUP
-#=================================================
 ynh_print_info "Declaring files to be backed up..."
 
 #=================================================
 # BACKUP THE APP MAIN DIR
 #=================================================
+
 ynh_backup "$install_dir"
 
 #=================================================
 # BACKUP THE NGINX CONFIGURATION
 #=================================================
+
 ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 
 #=================================================
 # BACKUP THE PHP-FPM CONFIGURATION
 #=================================================
-ynh_backup "/etc/php/$phpversion/fpm/pool.d/$app.conf"
+
+ynh_backup "/etc/php/$php_version/fpm/pool.d/$app.conf"
 
 #=================================================
 # BACKUP VARIOUS FILES
 #=================================================
+
 ynh_backup "/etc/cron.d/$app"
 
 #=================================================
 # BACKUP SYSTEMD
 #=================================================
+
 ynh_backup "/etc/systemd/system/$app.service"
 
 #=================================================
