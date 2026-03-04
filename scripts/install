@@ -11,6 +11,9 @@ ynh_script_progression "Setting up source files..."
 
 ynh_setup_source --dest_dir="$install_dir"
 
+chmod -R g+w "$install_dir/storage"
+chmod -R g+w "$install_dir/bootstrap/cache"
+
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
@@ -41,21 +44,23 @@ ynh_script_progression "Adding $app's configuration..."
 ynh_config_add --template=".env" --destination="$install_dir/.env"
 
 #=================================================
-# FINAL MAILBAG INSTALL
+# APP INSTALL
 #=================================================
 ynh_script_progression "Install $app"
 
 pushd $install_dir
-	php$php_version artisan key:generate --no-interaction --force
-	touch storage/database/database.sqlite
-	php$php_version artisan migrate --no-interaction --force
+	ynh_exec_as_app php$php_version artisan key:generate --no-interaction --force
+	ynh_exec_as_app touch storage/database/database.sqlite
+	ynh_exec_as_app php$php_version artisan migrate --no-interaction --force
 
 	ynh_hide_warnings ynh_exec_as_app npm install
 	ynh_hide_warnings ynh_exec_as_app npm run build
+	ynh_exec_as_app php$php_version artisan mailbag:add-user <<EOF
+$admin
+$email
+$password
+EOF
 popd
-
-chown -R "$app:www-data" "$install_dir/storage" 
-chown -R "$app:www-data" "$install_dir/bootstrap/cache"
 
 #=================================================
 # START SYSTEMD SERVICE
