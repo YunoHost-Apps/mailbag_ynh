@@ -9,7 +9,7 @@ description.fr = "Application simple d'envoi d'e-mails en texte brut"
 
 version = "2026.03.03~ynh1"
 
-maintainers = ["eric_G"]
+maintainers = [ ]
 
 [upstream]
 license = "MIT"
