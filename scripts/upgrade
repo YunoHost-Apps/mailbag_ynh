@@ -1,103 +1,77 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
-source _common.sh
 source /usr/share/yunohost/helpers
-
-upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..." --weight=1
+ynh_script_progression "Stopping $app's systemd service..."
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
+ynh_systemctl --service=$app --action="stop"
 
-#=================================================
-# "REBUILD" THE APP (DEPLOY NEW SOURCES, RERUN NPM BUILD...)
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
+ynh_script_progression "Upgrading source files..."
 
-if [ "$upgrade_type" == "UPGRADE_APP" ]
-then
-	ynh_script_progression --message="Upgrading source files..." --weight=1
-
-	# Download, check integrity, uncompress and patch the source from manifest.toml
-	ynh_setup_source --dest_dir="$install_dir" --keep=".env storage/database/database.sqlite"
-fi
-
-chmod -R o-rwx $install_dir
-chown -R $app:www-data "$install_dir"
+ynh_setup_source --dest_dir="$install_dir" --keep=".env storage/database/database.sqlite"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
+ynh_script_progression "Upgrading system configurations related to $app..."
 
-ynh_add_fpm_config
+ynh_config_add_phpfpm
 
-ynh_add_nginx_config
+ynh_config_add_nginx
 
-ynh_add_systemd_config
+ynh_config_add_systemd
 
-ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
-chown root: "/etc/cron.d/$app"
-chmod 644 "/etc/cron.d/$app"
+ynh_config_add_logrotate "$install_dir/storage/logs/laravel.log"
 
-yunohost service add $app --description="MailBag Queue" --log="/var/log/$app/$app.log"
+ynh_config_add --template="cron" --destination="/etc/cron.d/$app"
 
-#=================================================
-# RECONFIGURE THE APP (UPDATE CONF, APPLY MIGRATIONS...)
-#=================================================
-# UPDATE A CONFIG FILE
-#=================================================
-ynh_script_progression --message="Updating a configuration file..." --weight=1
-
-ynh_add_config --template=".env" --destination="$install_dir/.env"
-
-chmod 400 "$install_dir/.env"
-chown $app:$app "$install_dir/.env"
+yunohost service add $app --description="MailBag Queue" --log="$install_dir/storage/logs/laravel.log"
 
 #=================================================
 # INSTALL AND INITIALIZE COMPOSER
 #=================================================
-ynh_script_progression --message="Installing Composer..." --weight=10
+ynh_script_progression "Installing Composer..."
 
-ynh_install_composer
+ynh_composer_exec install --no-dev
 
 #=================================================
-# FINAL MAILBAG INSTALL
+# APP INSTALL
 #=================================================
-ynh_script_progression --message="Install $app" --weight=5
+ynh_script_progression "Installing $app..."
 
 pushd $install_dir
-	php$phpversion artisan migrate --no-interaction --force
- 	ynh_use_nodejs
-	ynh_exec_warn_less sudo -u $app env $ynh_node_load_PATH $ynh_npm install
-	ynh_exec_warn_less sudo -u $app env $ynh_node_load_PATH NODE_ENV=production $ynh_npm run build
+	php$php_version artisan migrate --no-interaction --force
 
-	php$phpversion artisan queue:restart
-	php$phpversion artisan config:cache
-	php$phpversion artisan route:cache
-	php$phpversion artisan view:cache
+	ynh_hide_warnings ynh_exec_as_app npm install
+	ynh_hide_warnings ynh_exec_as_app npm run build
+
+	php$php_version artisan queue:restart
+	php$php_version artisan config:cache
+	php$php_version artisan route:cache
+	php$php_version artisan view:cache
 popd
 
+chown -R "$app:www-data" "$install_dir/storage"
+chown -R "$app:www-data" "$install_dir/bootstrap/cache"
+
+chmod -R g+w "$install_dir/storage"
+chmod -R g+w "$install_dir/bootstrap/cache"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --weight=1
+ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemctl --service=$app --action="start"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Upgrade of $app completed" --last
+ynh_script_progression "Upgrade of $app completed"

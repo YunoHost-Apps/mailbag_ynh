@@ -1,0 +1,97 @@
+version = "1.0"
+
+[main]
+services = [ "__APP__" ]
+name = "Config Panel"
+
+[main.app]
+name = "branding"
+
+    [main.app.app_company_name]
+    ask = "App Company Name"
+    bind = ":__INSTALL_DIR__/.env"
+    help = "Name of the entity that will be shown on things like unsubscribe/sign-up forms"
+    type = "string"
+
+    [main.app.home_redirect_url]
+    ask = "Home Redirect URL"
+    bind = ":__INSTALL_DIR__/.env"
+    help = "URL you want to redirect to when someone accesses the root/homepage of the app"
+    type = "string"
+    pattern.regexp = "^https://.+$"
+    pattern.error = "Must be a full URL; eg, `https://domain.tld`"
+
+    [main.app.mail_from_address]
+    ask = "Mail From Address"
+    bind = ":__INSTALL_DIR__/.env"
+    help = "Address emails applied to sent emails"
+    type = "string"
+    pattern.regexp = "^.+@.+$"
+    pattern.error = "An email is required for this field"
+
+    [main.app.mail_from_name]
+    ask = "Mail From Name"
+    bind = ":__INSTALL_DIR__/.env"
+    help = "Name applied to sent emails"
+    type = "string"
+
+[main.hcaptcha]
+name = "hCaptcha"
+
+    [main.hcaptcha.hcenable]
+    ask = "Enable hcaptcha?"
+    help = "Used to protect sign-up forms from bots; keys can be acquired at https://www.hcaptcha.com"
+    type = "boolean"
+    default = false
+
+    [main.hcaptcha.hcaptcha_sitekey]
+    ask = "Sitekey"
+    bind = ":__INSTALL_DIR__/.env"
+    type = "string"
+    visible = "hcenable"
+    
+    [main.hcaptcha.hcaptcha_secretkey]
+    ask = "Secret key"
+    bind = ":__INSTALL_DIR__/.env"
+    type = "string"
+    visible = "hcenable"
+
+[main.mail]
+name = "mail sending settings"
+
+    [main.mail.enable_custom]
+    ask = "Enable custom settings?"
+    help = "Used for sending mail through an external server/service other than this yunohost server"
+    type = "boolean"
+    default = false
+
+    [main.mail.mail_host]
+    ask = "Mail Host"
+    help = "The server domain (or IP) you want to send mail through"
+    example = "eg, mx.server.tld"
+    bind = ":__INSTALL_DIR__/.env"
+    type = "string"
+    visible = "enable_custom"
+
+    [main.mail.mail_port]
+    ask = "Mail Port"
+    help = "The server port used by `Mail Host`"
+    example = "eg. 587"
+    bind = ":__INSTALL_DIR__/.env"
+    type = "string"
+    visible = "enable_custom"
+    [main.mail_port]
+
+    [main.mail.mail_username]
+    ask = "Mail Username"
+    help = "The username used to access `Mail Host`"
+    bind = ":__INSTALL_DIR__/.env"
+    type = "string"
+    visible = "enable_custom"
+
+    [main.mail.mail_password]
+    ask = "Mail Password"
+    help = "The password used to access `Mail Host`"
+    bind = ":__INSTALL_DIR__/.env"
+    type = "password"
+    visible = "enable_custom"
