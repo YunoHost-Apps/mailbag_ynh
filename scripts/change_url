@@ -17,6 +17,13 @@ ynh_script_progression "Updating web server configuration..."
 ynh_config_change_url_nginx
 
 #=================================================
+# MODIFY APP_URL IN .ENV
+#=================================================
+ynh_script_progression "Updating $app configuration..."
+
+ynh_write_var_in_file --file=$install_dir/.env --key=app_url --value="https://$new_domain"
+
+#=================================================
 # START SYSTEMD SERVICE
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."

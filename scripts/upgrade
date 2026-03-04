@@ -14,7 +14,6 @@ ynh_systemctl --service=$app --action="stop"
 #=================================================
 ynh_script_progression "Upgrading source files..."
 
-# Download, check integrity, uncompress and patch the source from manifest.toml
 ynh_setup_source --dest_dir="$install_dir" --keep=".env storage/database/database.sqlite"
 
 #=================================================
@@ -32,14 +31,7 @@ ynh_config_add_logrotate "$install_dir/storage/logs/laravel.log"
 
 ynh_config_add --template="cron" --destination="/etc/cron.d/$app"
 
-yunohost service add $app --description="MailBag Queue" --log="/var/www/mailbag/storage/logs/laravel.log"
-
-#=================================================
-# UPDATE A CONFIG FILE
-#=================================================
-ynh_script_progression "Updating configuration..."
-
-ynh_config_add --template=".env" --destination="$install_dir/.env"
+yunohost service add $app --description="MailBag Queue" -log="$install_dir/storage/logs/laravel.log"
 
 #=================================================
 # INSTALL AND INITIALIZE COMPOSER
@@ -49,21 +41,27 @@ ynh_script_progression "Installing Composer..."
 ynh_composer_exec install --no-dev
 
 #=================================================
-# FINAL MAILBAG INSTALL
+# APP INSTALL
 #=================================================
-ynh_script_progression "Install $app"
+ynh_script_progression "Installing $app..."
 
 pushd $install_dir
 	php$php_version artisan migrate --no-interaction --force
 
 	ynh_hide_warnings ynh_exec_as_app npm install
-	ynh_hide_warnings ynh_exec_as_app NODE_ENV=production npm run build
+	ynh_hide_warnings ynh_exec_as_app npm run build
 
 	php$php_version artisan queue:restart
 	php$php_version artisan config:cache
 	php$php_version artisan route:cache
 	php$php_version artisan view:cache
 popd
+
+chown -R "$app:www-data" "$install_dir/storage"
+chown -R "$app:www-data" "$install_dir/bootstrap/cache"
+
+chmod -R g+w "$install_dir/storage"
+chmod -R g+w "$install_dir/bootstrap/cache"
 
 #=================================================
 # START SYSTEMD SERVICE
