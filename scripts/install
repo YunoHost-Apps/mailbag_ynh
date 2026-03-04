@@ -11,9 +11,6 @@ ynh_script_progression "Setting up source files..."
 
 ynh_setup_source --dest_dir="$install_dir"
 
-chmod -R g+w "$install_dir/storage"
-chmod -R g+w "$install_dir/bootstrap/cache"
-
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
@@ -63,6 +60,12 @@ $email
 $password
 EOF
 popd
+
+chown -R "$app:www-data" "$install_dir/storage"
+chown -R "$app:www-data" "$install_dir/bootstrap/cache"
+
+chmod -R g+w "$install_dir/storage"
+chmod -R g+w "$install_dir/bootstrap/cache"
 
 #=================================================
 # START SYSTEMD SERVICE
