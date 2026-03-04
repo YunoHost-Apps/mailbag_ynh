@@ -7,26 +7,26 @@ name = "MailBag"
 description.en = "Simple plaintext email send app"
 description.fr = "Application simple d'envoi d'e-mails en texte brut"
 
-version = "23.12.30~ynh1"
+version = "2026.03.03~ynh1"
 
 maintainers = ["eric_G"]
 
 [upstream]
 license = "MIT"
-code = "https://github.com/ssddanbrown/mailbag"
+code = "https://codeberg.org/danb/mailbag"
 
 [integration]
-yunohost = ">= 11.2"
+yunohost = ">= 12.1.38"
+helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
 
 ldap = false
-
 sso = false
 
-disk = "50M"
+disk = "100M"
 ram.build = "350M"
-ram.runtime = "50M"
+ram.runtime = "150M"
 
 [install]
     [install.domain]
@@ -39,13 +39,16 @@ ram.runtime = "50M"
     [install.admin]
     type = "user"
 
+    [install.password]
+    type = "password"
+
 [resources]
 
     [resources.sources]
 
         [resources.sources.main]
-        url = "https://github.com/ssddanbrown/mailbag/archive/05a98f7ff15533f828d53a43c63ca56176c9c418.tar.gz"
-        sha256 = "8745550ec11f1fae505c98542044232643d23c3a5a47b5b15694d84d7265d8c2"
+        url = "https://codeberg.org/danb/mailbag/archive/a98dab573955764f71d0cbf4f02380eaaa8d4838.tar.gz"
+        sha256 = "5fbcce99ded13e59ef89acc71cc7e312c6508ede3ff37002b257d7fff3628031"
 
     [resources.system_user]
     allow_email = true
@@ -56,4 +59,10 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
-    packages = "sqlite3, php8.2-fpm, php8.2-bcmath, php8.2-mbstring, php8.2-sqlite3, php8.2-xml"
+    packages = "sqlite3, php8.4-bcmath, php8.4-mbstring, php8.4-sqlite3, php8.4-xml"
+
+    [resources.composer]
+    version = "2.9.5"
+
+    [resources.nodejs]
+    version = "22"
