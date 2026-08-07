@@ -48,7 +48,7 @@ ram.runtime = "150M"
 
         [resources.sources.main]
         url = "https://codeberg.org/danb/mailbag/archive/a98dab573955764f71d0cbf4f02380eaaa8d4838.tar.gz"
-        sha256 = "5fbcce99ded13e59ef89acc71cc7e312c6508ede3ff37002b257d7fff3628031"
+        sha256 = "e986edc842be038e5faea490671946602fb2ea17de9199714038b0275bef6ec6"
 
     [resources.system_user]
     allow_email = true
