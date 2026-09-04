@@ -16,7 +16,7 @@ license = "MIT"
 code = "https://codeberg.org/danb/mailbag"
 
 [integration]
-yunohost = ">= 12.1.38"
+yunohost = ">= 12.1.40"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
@@ -59,10 +59,10 @@ ram.runtime = "150M"
     main.url = "/"
 
     [resources.apt]
-    packages = "sqlite3, php8.4-bcmath, php8.4-mbstring, php8.4-sqlite3, php8.4-xml"
+    packages = "sqlite3, php8.5-bcmath, php8.5-mbstring, php8.5-sqlite3, php8.5-xml"
 
     [resources.composer]
-    version = "2.9.5"
+    version = "2.10.2"
 
     [resources.nodejs]
-    version = "22"
+    version = "24"
