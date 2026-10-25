@@ -7,7 +7,7 @@ name = "MailBag"
 description.en = "Simple plaintext email send app"
 description.fr = "Application simple d'envoi d'e-mails en texte brut"
 
-version = "2026.03.03~ynh1"
+version = "2026.03.03~ynh2"
 
 maintainers = [ ]
 
